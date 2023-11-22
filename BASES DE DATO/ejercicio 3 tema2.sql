@@ -49,22 +49,25 @@ WHERE tipo_operacion = 'Venta'
 
 
 
-SELECT ROUND(AVG (i.precio),2) AS "i.med_prec_fin", 
-    ROUND(AVG (o.precio_final),2) AS "o.media_precio_final",
-    ROUND(AVG ((i.precio / o.precio_final)*100),2) AS "porcentaje_precio"
+SELECT AVG (precio), AVG(precio_final),
+	ROUND (((AVG(precio)-AVG(precio_final))/AVG(precio)*100),2)
 FROM inmueble i JOIN operacion o USING (id_inmueble)
         JOIN tipo t ON (i.tipo_inmueble = t.id_tipo)
 WHERE  t.nombre IN ('Casa','Piso')
   AND i.superficie < 100
-  AND fecha_operacion-fecha_alta >= 365
-  	OR fecha_operacion-fecha_alta >=366
+  AND fecha_operacion >= fecha_alta + '1 mon'::interval
+  	
 
 6
 
 SELECT MAX (o.precio_final)
-FROM operacion o  JOIN inmueble i USING (id_inmueble)
-WHERE TO_CHAR(fecha_operacion,'MM') IN ('08','09')
+FROM inmueble JOIN tipo ON (id_tipo=tipo_inmueble)
+	JOIN operacion o USING (id_inmueble)
+WHERE TO_CHAR(fecha_operacion,'MM') IN ('07','08')
 	AND provincia = 'Huelva'
+	AND nombre IN ('Casa','Piso')
+	AND tipo_operacion = 'Alquiler'
+
 	
 7
 
