@@ -13,8 +13,7 @@ FROM customers JOIN orders USING(customer_id);
 	FROM orders o 
 		JOIN shippers s ON (ship_via=s.shipper_id)
 	WHERE company_name IN ('Federal Shipping','United Package')
-	AND TO_CHAR (shipped_date,'YYYY')IN ('1990','1991','1992','1993'
-										 ,'1994','1995','1996','1997','1998','1999')
+	AND TO_CHAR (shipped_date,'YYYY') BETWEEN '1990'AND '1999'
 	
 
 3.
@@ -23,11 +22,15 @@ SELECT DISTINCT (product_name)
 FROM products
 WHERE units_on_order!=0
 
+--correccion
+SELECT DISTINCT product_name
+FROM products JOIN order_details USING (product_id)
+
 4.
 
 --Seleccionar la suma de los importes "cobrados" en todos los pedidos realizados en el año 96.
 
-SELECT sum (o.unit_price)
+SELECT SUM(o.unit_price * quantity * (1 - discount))
 FROM products JOIN order_details o USING (product_id)
 	JOIN orders USING (order_id)
 WHERE TO_CHAR (order_date,'YYYY')IN ('1996')
@@ -38,11 +41,18 @@ WHERE TO_CHAR (order_date,'YYYY')IN ('1996')
 --clientes y empleados que han participado en pedidos donde la diferencia entre 
 --la fecha de envío y la fecha de requisito sea menos de 20 días
 
-SELECT * , AGE (required_date, order_date) BETWEEN '1 day'::interval AND '20 day'::interval--c.contact_name, e.first_name
-FROM customers c
-    JOIN orders USING (customer_id)
-    JOIN employees e USING (employee_id)
-WHERE AGE (required_date, order_date) BETWEEN '1 day'::interval AND '20 day'::interval
+SELECT DISTINCT contact_name, first_name , last_name
+	FROM orders JOIN customers USING (customer_id)
+		JOIN employees USING (employee_id)
+WHERE AGE (required_date, shipped_date) BETWEEN -('19 day'::interval) AND ('19 day'::interval)
+
+--correcion
+
+SELECT contact_name, first_name , last_name
+	FROM orders JOIN customers USING (customer_id)
+		JOIN employees USING (employee_id)
+--WHERE required_date - shipped_date < 20
+
 
 6.
 SELECT s.company_name , required_date
