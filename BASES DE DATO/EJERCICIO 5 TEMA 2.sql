@@ -9,7 +9,7 @@ WHERE company_name = 'United Package'
 
 /*2*/
 
-SELECT *
+SELECT DISTINCT product_name , category_name
 FROM categories JOIN products USING (category_id)
 	JOIN order_details USING (product_id)
 	JOIN orders USING (order_id)
@@ -18,7 +18,7 @@ WHERE EXTRACT (month FROM order_date)= 8;
 /*3*/
 
 SELECT company_name
-FROM   customers 
+FROM  customers 
 
 
 /*4*/
@@ -56,3 +56,6 @@ WHERE employee_id IN ('1','2')
 	AND product_name ILIKE ('%a')
 
 
+SELECT DISTINCT*
+FROM customers LEFT JOIN orders USING (customer_id)
+WHERE order_id IS NULL
