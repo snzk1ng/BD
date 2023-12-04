@@ -1,0 +1,9 @@
+/*CONTAR NUMERO DE VUELOS POR EL DIA DE LA SEMANA
+Y DA IGUAL EL AÑO DE FECHA DE SALIDA*/
+
+SELECT TO_CHAR (salida , 'ID' )as "dia_semana" , COUNT (*)
+FROM vuelo
+WHERE EXTRACT (month from salida) BETWEEN 1 AND 6
+GROUP BY dia_semana
+HAVING COUNT (*)>=10
+ORDER BY dia_semana
